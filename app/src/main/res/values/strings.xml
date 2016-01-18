@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">SmartHome</string>
+
+    <string name="title_section1">設備一覽</string>
+    <string name="title_section2">設備連結</string>
+    <string name="title_section3">Section 3</string>
+    <string name="title_section4">Section 4</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_example"> </string>
+
+    <string name="action_settings">設定</string>
+    <string name="about">關於</string>
+
+    <string name="ip_address">IP Address</string>
+    <string name="connect">連接</string>
+    <string name="search">搜尋</string>
+</resources>
