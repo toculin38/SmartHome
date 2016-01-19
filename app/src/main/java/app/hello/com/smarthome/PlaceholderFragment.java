@@ -2,6 +2,7 @@ package app.hello.com.smarthome;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,11 +16,9 @@ public class PlaceholderFragment extends Fragment {
      * The fragment argument representing the section number for this
      * fragment.
      */
-    View rootView;
+    protected View rootView;
     private static final String ARG_SECTION_NUMBER = "section_number";
     protected CommandManager commandManager ;
-
-
     /**
      * Returns a new instance of this fragment for the given section
      * number.

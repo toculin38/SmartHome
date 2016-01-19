@@ -9,13 +9,13 @@ import android.view.ViewGroup;
 /**
  * Created by 邱偉 on 2016/1/15.
  */
-public class ControllerFragment extends Fragment {
-    private static final String ARG_SECTION_NUMBER = "section_number";
+public class ControllerFragment extends AppliancesFragment {
+    private static final String ARG_LIST_NUMBER = "list_number";
 
-    public static ControllerFragment newInstance(int sectionNumber) {
+    public static ControllerFragment newInstance(int listNumber) {
         ControllerFragment fragment = new ControllerFragment();
         Bundle args = new Bundle();//bundle?
-        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+        args.putInt(ARG_LIST_NUMBER, listNumber);
         fragment.setArguments(args);
         return fragment;
     }
@@ -23,7 +23,7 @@ public class ControllerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView;
-        switch (getArguments().getInt(ARG_SECTION_NUMBER)) {
+        switch (getArguments().getInt(ARG_LIST_NUMBER)) {
             case 1:
                 rootView = inflater.inflate(R.layout.fragment_controller_tv, container, false);
                 break;
@@ -32,4 +32,5 @@ public class ControllerFragment extends Fragment {
         }
         return rootView;
     }
+
 }

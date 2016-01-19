@@ -1,6 +1,9 @@
 package app.hello.com.smarthome;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.text.InputFilter;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -11,19 +14,23 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 /**
  * Created by 邱偉 on 2016/1/17.
  */
 public class ConnectionFragment extends PlaceholderFragment {
-    private static int port = 8890;
     private Button connectButton;
     private EditText IPAddressEditText;
-
+    private TextView stateTextview;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+        /*set up Textview*/
+        stateTextview = (TextView)(rootView.findViewById(R.id.statTXV));
         /*set up EditText*/
-        IPAddressEditText = (EditText) (rootView.findViewById(R.id.EDTaddress));
+        IPAddressEditText = (EditText) (rootView.findViewById(R.id.addressEDT));
         setInputFilter(); /*設定輸入格式*/
         IPAddressEditText.setOnEditorActionListener(new EditText.OnEditorActionListener() { /*EditText中按下Enter鍵時的行為*/
             @Override
@@ -40,9 +47,10 @@ public class ConnectionFragment extends PlaceholderFragment {
                 connectToServer();
             }
         });
-
+        rootView.post(stateCheck);
         return rootView;
     }
+
     private void setInputFilter() {
         InputFilter[] filters = new InputFilter[1];
         filters[0] = new InputFilter() {
@@ -71,12 +79,32 @@ public class ConnectionFragment extends PlaceholderFragment {
         };
         IPAddressEditText.setFilters(filters);
     }
+
     public void connectToServer(){
-        Toast.makeText(getActivity(), IPAddressEditText.getText() + " 連線中 請稍後...", Toast.LENGTH_SHORT).show();
-        String address = IPAddressEditText.getText().toString();
-        if(commandManager.connectToServer(address, port))
-            Toast.makeText(getActivity(), IPAddressEditText.getText() + " 連接成功！", Toast.LENGTH_SHORT).show();
-        else
-            Toast.makeText(getActivity(), IPAddressEditText.getText() + " 連接失敗！", Toast.LENGTH_LONG).show();
+        if(commandManager.isConnected()){
+            Toast.makeText(getActivity(), "已於連線狀態！", Toast.LENGTH_SHORT).show();
+        }else{
+            String address = IPAddressEditText.getText().toString();
+            Toast.makeText(getActivity(), address + " 連線中 請稍後...", Toast.LENGTH_SHORT).show();
+            commandManager.connectToServer(address);
+            if(commandManager.isConnected())
+                Toast.makeText(getActivity(), address + " 連接成功！", Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(getActivity(), address + " 連接失敗！", Toast.LENGTH_LONG).show();
+        }
     }
+
+    private TimerTask stateCheck = (new TimerTask() {
+        @Override
+        public void run() {
+            if(commandManager.isConnected()){
+                stateTextview.setText("已連線");
+                stateTextview.setTextColor(Color.GREEN);
+            }else{
+                stateTextview.setText("未連線");
+                stateTextview.setTextColor(Color.RED);
+            }
+            rootView.postDelayed(stateCheck,1000);
+        }
+    });
 }

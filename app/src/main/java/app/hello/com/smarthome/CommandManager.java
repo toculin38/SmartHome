@@ -3,50 +3,70 @@ package app.hello.com.smarthome;
 import android.os.HandlerThread;
 import android.os.Handler;
 
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 
 /**
  * Created by 邱偉 on 2016/1/17.
  */
 public class CommandManager
 {
-    private Handler cm;
-    private HandlerThread cmThread;
+    public final static int port = 8087;
+    private Socket client;
+    private Handler handler;
+    private HandlerThread handlerThread;
+
     public CommandManager(){
-        cmThread = new HandlerThread("name");
-        cmThread.start();
-        cm = new Handler(cmThread.getLooper());
+        client = new Socket();
+        handlerThread = new HandlerThread("name");
+        handlerThread.start();
+        handler = new Handler(handlerThread.getLooper());
     }
-    public boolean connectToServer(String address,int port){
+
+    public synchronized void connectToServer(String address){
         Connect connect = new Connect(address,port);
-        cm.post(connect);
-        synchronized(connect){
-            return connect.result;
+        handler.post(connect);
+        while (!connect.isDone()){
+            try{
+                wait(30);
+            }
+            catch (InterruptedException e){
+                System.out.println(e.toString());
+            }
         }
     }
 
+    public boolean isConnected(){
+        return client.isConnected();
+    }
+
     private class Connect implements Runnable{
-        String address;
-        int port;
-        boolean result;
+        private String address;
+        private int port;
+        public boolean done;
         public Connect(String address,int port){
             this.address = address;
             this.port = port;
+            this.done = false;
+        }
+        public boolean isDone(){
+            return done;
         }
         public void run() {
             synchronized(this){
-                Socket client = new Socket();
-                InetSocketAddress isa = new InetSocketAddress(address, port);
                 try {
-                    client.connect(isa, 3000);
-                    result = true;
+                    InetAddress serverAddr = InetAddress.getByName(address);
+                    SocketAddress sc_add = new InetSocketAddress(serverAddr, port);
+                    client.connect(sc_add,3000);
                 } catch (java.io.IOException e) {
                     System.out.println("IOException :" + e.toString());
-                    result = false;
                 }
+                done = true;
             }
         }
+
     }
 
 }
