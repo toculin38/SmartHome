@@ -2,8 +2,6 @@ package app.hello.com.smarthome;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.text.InputFilter;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -13,8 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.Timer;
 import java.util.TimerTask;
 
 /**
@@ -81,14 +77,14 @@ public class ConnectionFragment extends PlaceholderFragment {
     }
 
     public void connectToServer(){
-        if(commandManager.isConnected()){
-            Toast.makeText(getActivity(), "已於連線狀態！", Toast.LENGTH_SHORT).show();
+        if(commandManager.isConnecting()){
+            Toast.makeText(getActivity(), "已於連線狀態！", Toast.LENGTH_LONG).show();
         }else{
             String address = IPAddressEditText.getText().toString();
-            Toast.makeText(getActivity(), address + " 連線中 請稍後...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), address + " 連線中 請稍後...", Toast.LENGTH_LONG).show();
             commandManager.connectToServer(address);
-            if(commandManager.isConnected())
-                Toast.makeText(getActivity(), address + " 連接成功！", Toast.LENGTH_SHORT).show();
+            if(commandManager.isConnecting())
+                Toast.makeText(getActivity(), address + " 連接成功！", Toast.LENGTH_LONG).show();
             else
                 Toast.makeText(getActivity(), address + " 連接失敗！", Toast.LENGTH_LONG).show();
         }
@@ -97,14 +93,14 @@ public class ConnectionFragment extends PlaceholderFragment {
     private TimerTask stateCheck = (new TimerTask() {
         @Override
         public void run() {
-            if(commandManager.isConnected()){
+            if(commandManager.isConnecting()){
                 stateTextview.setText("已連線");
                 stateTextview.setTextColor(Color.GREEN);
             }else{
                 stateTextview.setText("未連線");
                 stateTextview.setTextColor(Color.RED);
             }
-            rootView.postDelayed(stateCheck,1000);
+            rootView.postDelayed(stateCheck, 1000);
         }
     });
 }

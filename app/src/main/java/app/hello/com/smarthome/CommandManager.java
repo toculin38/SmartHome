@@ -3,6 +3,10 @@ package app.hello.com.smarthome;
 import android.os.HandlerThread;
 import android.os.Handler;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -38,8 +42,24 @@ public class CommandManager
         }
     }
 
-    public boolean isConnected(){
-        return client.isConnected();
+    public boolean isConnecting(){
+        PrintStream out;
+        try {
+             out = new PrintStream(client.getOutputStream());
+        } catch (IOException e){
+            return false;
+        }
+        return out.checkError();
+    }
+
+    public void sendCommand(String command){
+        try {
+            DataOutputStream out = new DataOutputStream(client.getOutputStream());
+            out.writeUTF(command);
+            out.flush();
+        }catch (IOException e){
+            System.out.println(e.toString());
+        }
     }
 
     private class Connect implements Runnable{
@@ -60,13 +80,11 @@ public class CommandManager
                     InetAddress serverAddr = InetAddress.getByName(address);
                     SocketAddress sc_add = new InetSocketAddress(serverAddr, port);
                     client.connect(sc_add,3000);
-                } catch (java.io.IOException e) {
-                    System.out.println("IOException :" + e.toString());
+                } catch (IOException e) {
+                    System.out.println(e.toString());
                 }
                 done = true;
             }
         }
-
     }
-
 }

@@ -13,16 +13,25 @@ public class ControllerFragment extends AppliancesFragment {
     private static final String ARG_LIST_NUMBER = "list_number";
 
     public static ControllerFragment newInstance(int listNumber) {
-        ControllerFragment fragment = new ControllerFragment();
+        ControllerFragment fragment = CreateFragmentByListNumber(listNumber);
         Bundle args = new Bundle();//bundle?
         args.putInt(ARG_LIST_NUMBER, listNumber);
         fragment.setArguments(args);
         return fragment;
     }
-
+    private static ControllerFragment CreateFragmentByListNumber(int listNumber) {
+        ControllerFragment fragment;
+        switch (listNumber) {
+            case 1:
+                fragment = new TVControllerFragment();
+                break;
+            default:
+                fragment = new ControllerFragment();
+        }
+        return fragment;
+    }
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView;
         switch (getArguments().getInt(ARG_LIST_NUMBER)) {
             case 1:
                 rootView = inflater.inflate(R.layout.fragment_controller_tv, container, false);
