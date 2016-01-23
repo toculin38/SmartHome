@@ -17,7 +17,7 @@ import java.net.SocketAddress;
  */
 public class CommandManager
 {
-    public final static int port = 8087;
+    public final static int port = 8888;
     private Socket client;
     private Handler handler;
     private HandlerThread handlerThread;
@@ -49,7 +49,16 @@ public class CommandManager
         } catch (IOException e){
             return false;
         }
-        return out.checkError();
+        return !(out.checkError());
+    }
+
+    public synchronized void disconnect(){
+        try {
+            client.close();
+            client = new Socket();
+        }catch (IOException e){
+            System.out.println(e.toString());
+        }
     }
 
     public void sendCommand(String command){

@@ -1,5 +1,6 @@
 package app.hello.com.smarthome;
 
+import android.app.AlertDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputFilter;
@@ -18,6 +19,7 @@ import java.util.TimerTask;
  */
 public class ConnectionFragment extends PlaceholderFragment {
     private Button connectButton;
+    private Button disconnectButton;
     private EditText IPAddressEditText;
     private TextView stateTextview;
     @Override
@@ -41,6 +43,13 @@ public class ConnectionFragment extends PlaceholderFragment {
             @Override
             public void onClick(View v) {
                 connectToServer();
+            }
+        });
+        disconnectButton = (Button)rootView.findViewById(R.id.disconnectBtn);
+        disconnectButton.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                disconnect();
             }
         });
         rootView.post(stateCheck);
@@ -76,9 +85,24 @@ public class ConnectionFragment extends PlaceholderFragment {
         IPAddressEditText.setFilters(filters);
     }
 
-    public void connectToServer(){
+    private void disconnect(){
         if(commandManager.isConnecting()){
-            Toast.makeText(getActivity(), "已於連線狀態！", Toast.LENGTH_LONG).show();
+            commandManager.disconnect();
+            Toast.makeText(getActivity(), "已斷開連線！", Toast.LENGTH_LONG).show();
+        }else{
+            new AlertDialog.Builder(getContext())
+                    .setTitle("錯誤")
+                    .setMessage("尚未連線，請先連接至主機！")
+                    .show();
+        }
+    }
+
+    private void connectToServer(){
+        if(commandManager.isConnecting()){
+            new AlertDialog.Builder(getContext())
+                    .setTitle("錯誤")
+                    .setMessage("已於連線狀態，請先中斷連線！")
+                    .show();
         }else{
             String address = IPAddressEditText.getText().toString();
             Toast.makeText(getActivity(), address + " 連線中 請稍後...", Toast.LENGTH_LONG).show();
@@ -100,7 +124,7 @@ public class ConnectionFragment extends PlaceholderFragment {
                 stateTextview.setText("未連線");
                 stateTextview.setTextColor(Color.RED);
             }
-            rootView.postDelayed(stateCheck, 1000);
+            rootView.postDelayed(stateCheck,500);
         }
     });
 }

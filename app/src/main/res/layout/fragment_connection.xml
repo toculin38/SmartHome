@@ -48,8 +48,8 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="@string/search"
-                android:id="@+id/searchWifi"
+                android:text="@string/disconnect"
+                android:id="@+id/disconnectBtn"
                 android:allowUndo="false"
                 android:layout_weight="1" />
 
