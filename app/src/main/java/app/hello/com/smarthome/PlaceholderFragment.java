@@ -40,6 +40,9 @@ public class PlaceholderFragment extends Fragment {
             case 2:
                 fragment = new ConnectionFragment();
                 break;
+            case 3:
+                fragment = new LocationFragment();
+                break;
             default:
                 fragment = new PlaceholderFragment();
         }
@@ -65,6 +68,9 @@ public class PlaceholderFragment extends Fragment {
                 break;
             case 2:
                 rootView = inflater.inflate(R.layout.fragment_connection, container, false);
+                break;
+            case 3:
+                rootView = inflater.inflate(R.layout.fragment_location, container, false);
                 break;
             default:
                 rootView = inflater.inflate(R.layout.fragment_smart_home, container, false);
