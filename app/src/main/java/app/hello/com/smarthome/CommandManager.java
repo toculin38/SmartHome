@@ -71,6 +71,46 @@ public class CommandManager
         }
     }
 
+    public synchronized String getData(){
+        UpdateState updateState = new UpdateState();
+        handler.post(updateState);
+        while (!updateState.isDone()){
+            try{
+                wait(30);
+            }
+            catch (InterruptedException e){
+                System.out.println(e.toString());
+            }
+        }
+        return updateState.getState();
+    }
+
+    private class UpdateState implements Runnable{
+        private boolean done;
+        private String state;
+        public UpdateState(){
+            this.done = false;
+        }
+        public boolean isDone(){
+            return done;
+        }
+        public void run() {
+            synchronized(this){
+                try {
+                    DataInputStream in = new DataInputStream(client.getInputStream());
+                    state = in.readUTF();
+
+                } catch (IOException e) {
+                    System.out.println(e.toString());
+                }
+                done = true;
+            }
+        }
+        public String getState(){
+            return state;
+        }
+    }
+
     private class Connect implements Runnable{
         private String address;
         private int port;

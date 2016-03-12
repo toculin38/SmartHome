@@ -30,8 +30,9 @@ public class TVControllerFragment extends ControllerFragment{
     private Button.OnClickListener listener = new Button.OnClickListener(){
         @Override
         public void onClick(View v) {
-            if(commandManager.isConnecting())
+            if(commandManager.isConnecting()) {
                 commandManager.sendCommand(v.getTag().toString());
+            }
             else{
                 new AlertDialog.Builder(getContext())
                         .setTitle("錯誤")

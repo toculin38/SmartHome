@@ -31,9 +31,9 @@ public class AppliancesFragment extends PlaceholderFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 /*change Fragment*/
-                FragmentManager fragmentManager = getFragmentManager();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 fragmentManager.beginTransaction()
-                        .replace(R.id.container, ControllerFragment.newInstance(position + 1))
+                        .replace(R.id.container, StatesFragment.newInstance(position + 1))
                         .addToBackStack(null)
                         .commit();
             }

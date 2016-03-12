@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">SmartHome</string>
 
-    <string name="title_section1">設備一覽</string>
-    <string name="title_section2">設備連結</string>
+    <string name="title_section1">設播一覽</string>
+    <string name="title_section2">連結主機</string>
     <string name="title_section3">位置資訊</string>
     <string name="title_section4">Section 4</string>
 
@@ -19,4 +19,9 @@
 
     <string name="longitude">經度：</string>
     <string name="latitude">緯度：</string>
+
+    <string name="power">電源：</string>
+    <string name="channel">頻道：</string>
+
+    <string name="control">遙控</string>
 </resources>
