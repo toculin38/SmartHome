@@ -18,7 +18,7 @@
             android:id="@+id/longitude"
             android:textIsSelectable="false"
             android:layout_gravity="center"
-            android:gravity="left" />
+            android:gravity="left|center" />
 
         <TextView
             android:layout_width="match_parent"
@@ -29,7 +29,15 @@
             android:layout_gravity="center"
             android:textIsSelectable="false"
             android:gravity="center|left" />
-
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/distance"
+            android:id="@+id/distance"
+            android:layout_gravity="center"
+            android:textIsSelectable="false"
+            android:gravity="center|left" />
     </LinearLayout>
 
 </LinearLayout>
