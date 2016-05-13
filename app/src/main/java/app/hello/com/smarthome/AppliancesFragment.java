@@ -1,10 +1,7 @@
 package app.hello.com.smarthome;
 
-import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +9,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 /**
  * Created by 邱偉 on 2016/1/17.
@@ -22,8 +18,7 @@ public class AppliancesFragment extends PlaceholderFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        /*set up ListView*/
-        setListView();
+        setListView();//set up ListView*
         return rootView;
     }
     private void setListView() {
@@ -35,8 +30,7 @@ public class AppliancesFragment extends PlaceholderFragment {
 
     private class ItemClickListener implements AdapterView.OnItemClickListener{
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                /*change Fragment*/
-
+            /*change Fragment*/
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.container, StatesFragment.newInstance(position + 1))
@@ -44,4 +38,5 @@ public class AppliancesFragment extends PlaceholderFragment {
                     .commit();
         }
     }
+
 }

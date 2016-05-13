@@ -33,13 +33,13 @@ public class PlaceholderFragment extends Fragment {
     private static PlaceholderFragment CreateFragmentBySectionNumber(int sectionNumber) {
         PlaceholderFragment fragment;
         switch (sectionNumber) {
-            case 1:
+            case 2:
                 fragment = new AppliancesFragment();
                 break;
-            case 2:
+            case 3:
                 fragment = new ConnectionFragment();
                 break;
-            case 3:
+            case 4:
                 fragment = new LocationFragment();
                 break;
             default:
@@ -62,13 +62,13 @@ public class PlaceholderFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         switch (getArguments().getInt(ARG_SECTION_NUMBER)) {
-            case 1:
+            case 2:
                 rootView = inflater.inflate(R.layout.fragment_appliances, container, false);
                 break;
-            case 2:
+            case 3:
                 rootView = inflater.inflate(R.layout.fragment_connection, container, false);
                 break;
-            case 3:
+            case 4:
                 rootView = inflater.inflate(R.layout.fragment_location, container, false);
                 break;
             default:

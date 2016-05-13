@@ -9,11 +9,16 @@ import android.widget.Button;
 /**
  * Created by 邱偉 on 2016/1/19.
  */
+
 public class TVControllerFragment extends ControllerFragment{
+
+    private static float availableDistance = 50;
+    private float distance;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        setAllButtonListener((ViewGroup)rootView);
+        setAllButtonListener((ViewGroup) rootView);
+        distance = ((MainActivity)getActivity()).getDistance();
         return rootView;
     }
     private void setAllButtonListener(ViewGroup viewGroup){
@@ -22,22 +27,26 @@ public class TVControllerFragment extends ControllerFragment{
             v = viewGroup.getChildAt(i);
             if (v instanceof ViewGroup) {
                 setAllButtonListener((ViewGroup)v);
-            } else if (v instanceof Button) {
-                ((Button) v).setOnClickListener(listener);
-            }
+            } else if (v instanceof Button) v.setOnClickListener(listener);
         }
     }
     private Button.OnClickListener listener = new Button.OnClickListener(){
         @Override
         public void onClick(View v) {
-            if(commandManager.isConnecting()) {
-                commandManager.sendCommand(v.getTag().toString());
-            }
-            else{
+            if(!commandManager.isConnecting()){
                 new AlertDialog.Builder(getContext())
                         .setTitle("錯誤")
                         .setMessage("尚未連接至主機")
                         .show();
+            }
+            else if(distance > availableDistance){
+                new AlertDialog.Builder(getContext())
+                        .setTitle("錯誤")
+                        .setMessage("距離過遠不允許控制")
+                        .show();
+            }
+            else{
+                commandManager.sendCommand(v.getTag().toString());
             }
         }
     };

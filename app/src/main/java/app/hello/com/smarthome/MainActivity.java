@@ -45,6 +45,8 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
         testLocationProvider();		//檢查定位服務
     }
 
+
+
     private LocationManager lms;
     private String bestProvider;	//最佳資訊提供者
     private Location location;
@@ -89,7 +91,6 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
             if(bestProvider != null) {
                 lms.requestLocationUpdates(bestProvider, 1000, 0, this);
                 location = lms.getLastKnownLocation(bestProvider);
-                Toast.makeText(this, bestProvider, Toast.LENGTH_LONG).show();
             }
             else{
                 Toast.makeText(this, "找不到GPS提供者，請稍後重新啟動後再試", Toast.LENGTH_LONG).show();
@@ -99,9 +100,7 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
         }
     }
 
-
-
-    public Location getLocation() {	//將定位資訊顯示在畫面中
+    public Location getLocation() {
         return location;
     }
 

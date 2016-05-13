@@ -13,45 +13,29 @@ import android.widget.TextView;
  * Created by 邱偉 on 2016/3/5.
  */
 public class TVStatesFragment extends StatesFragment {
-    private static float availableDistance = 500;
     private Button controlButton;
     private TextView power;
     private TextView channel;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-        controlButton = (Button)(rootView.findViewById(R.id.controlBTN));
-        power = (TextView)(rootView.findViewById(R.id.powerTXV));
-        channel = (TextView)(rootView.findViewById(R.id.channelTXV));
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        controlButton = (Button)(view.findViewById(R.id.controlBTN));
+        power = (TextView)(view.findViewById(R.id.powerTXV));
+        channel = (TextView)(view.findViewById(R.id.channelTXV));
         controlButton.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v) {
                 /*change Fragment*/
-                if(!commandManager.isConnecting()){
-                    new AlertDialog.Builder(getContext())
-                            .setTitle("錯誤")
-                            .setMessage("尚未連接至主機")
-                            .show();
-                }
-                else if(((MainActivity)getActivity()).getDistance() > availableDistance){
-                    new AlertDialog.Builder(getContext())
-                            .setTitle("錯誤")
-                            .setMessage("距離過遠不允許控制")
-                            .show();
-
-                }
-                else{
-                    commandManager.sendCommand("TV");
-                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.container, ControllerFragment.newInstance(1))
-                            .addToBackStack(null)
-                            .commit();
-                }
+                commandManager.sendCommand("TV");
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, ControllerFragment.newInstance(1))
+                        .addToBackStack(null)
+                        .commit();
             }
         });
         getStates();
-        return rootView;
+        return view;
     }
 
     public void getStates(){

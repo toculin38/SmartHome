@@ -29,7 +29,7 @@ public class ConnectionFragment extends PlaceholderFragment {
         stateTextview = (TextView)(rootView.findViewById(R.id.statTXV));
         /*set up EditText*/
         IPAddressEditText = (EditText) (rootView.findViewById(R.id.addressEDT));
-        setInputFilter(); /*設定輸入格式*/
+        setInputFilter(); //設定輸入格式
         IPAddressEditText.setOnEditorActionListener(new EditText.OnEditorActionListener() { /*EditText中按下Enter鍵時的行為*/
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -52,7 +52,9 @@ public class ConnectionFragment extends PlaceholderFragment {
                 disconnect();
             }
         });
-        rootView.post(stateCheck);
+
+        rootView.post(stateCheck); //check is if connecting
+
         return rootView;
     }
 
@@ -92,7 +94,7 @@ public class ConnectionFragment extends PlaceholderFragment {
         }else{
             new AlertDialog.Builder(getContext())
                     .setTitle("錯誤")
-                    .setMessage("尚未連線，請先連接至主機！")
+                    .setMessage("尚未連線！")
                     .show();
         }
     }
@@ -124,7 +126,7 @@ public class ConnectionFragment extends PlaceholderFragment {
                 stateTextview.setText("未連線");
                 stateTextview.setTextColor(Color.RED);
             }
-            rootView.postDelayed(stateCheck,500);
+            rootView.postDelayed(stateCheck,1000);
         }
     });
 }
