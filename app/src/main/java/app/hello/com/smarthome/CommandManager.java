@@ -17,7 +17,7 @@ import java.net.SocketAddress;
  */
 public class CommandManager
 {
-    public final static int port = 8888;
+    public final static int port = 8880;
     private Socket client;
     private Handler handler;
     private HandlerThread handlerThread;
@@ -31,6 +31,7 @@ public class CommandManager
 
     public synchronized void connectToServer(String address){
         Connect connect = new Connect(address,port);
+        System.out.println(port);
         handler.post(connect);
         while (!connect.isDone()){
             try{

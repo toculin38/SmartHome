@@ -14,14 +14,16 @@ import android.widget.TextView;
  */
 public class TVStatesFragment extends StatesFragment {
     private Button controlButton;
+    private TextView enable;
     private TextView power;
     private TextView channel;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-        controlButton = (Button)(view.findViewById(R.id.controlBTN));
-        power = (TextView)(view.findViewById(R.id.powerTXV));
-        channel = (TextView)(view.findViewById(R.id.channelTXV));
+        super.onCreateView(inflater, container, savedInstanceState);
+        controlButton = (Button)(rootView.findViewById(R.id.controlBTN));
+        enable = (TextView)(rootView.findViewById(R.id.enableTXV));
+        power = (TextView)(rootView.findViewById(R.id.powerTXV));
+        channel = (TextView)(rootView.findViewById(R.id.channelTXV));
         controlButton.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -35,11 +37,12 @@ public class TVStatesFragment extends StatesFragment {
             }
         });
         getStates();
-        return view;
+        return rootView;
     }
 
     public void getStates(){
         commandManager.sendCommand("get TV state");
+        enable.setText(commandManager.getData());
         power.setText(commandManager.getData());
         channel.setText(commandManager.getData());
     }

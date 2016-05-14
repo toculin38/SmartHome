@@ -21,7 +21,9 @@
     <string name="latitude">緯度：</string>
     <string name="distance">距離：</string>
     <string name="address">位址：</string>
+    <string name="refresh">重新整理</string>
 
+    <string name="enable">狀態：</string>
     <string name="power">電源：</string>
     <string name="channel">頻道：</string>
 

@@ -1,6 +1,9 @@
 package app.hello.com.smarthome;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Criteria;
@@ -9,15 +12,18 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.provider.Settings;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.DigitsKeyListener;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import java.util.List;
@@ -41,17 +47,17 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
         mTitle = getTitle();
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
+
         commandManager = new CommandManager();
         testLocationProvider();		//檢查定位服務
     }
 
-
-
     private LocationManager lms;
     private String bestProvider;	//最佳資訊提供者
     private Location location;
-    private static double homeLongitude = 120.6673807;
-    private static double homeLatitude = 24.1163121;
+    private double homeLongitude = 120.6673807;
+    private double homeLatitude = 24.1163121;
+
 
     public float getDistance(){
         if(location == null)
@@ -196,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
         int id = item.getItemId();
         switch (id){
             case R.id.action_settings:
-                Toast.makeText(this, "Settings action", Toast.LENGTH_SHORT).show();
+                settingPopUp();
                 return true;
             case R.id.action_about:
                 Toast.makeText(this, "about action", Toast.LENGTH_SHORT).show();
@@ -207,6 +213,54 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
 
     }
 
+    private void settingPopUp() {
+
+        AlertDialog.Builder helpBuilder = new AlertDialog.Builder(this);
+        helpBuilder.setTitle("Location Setting");
+        helpBuilder.setMessage("輸入主機座標");
+
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_location_setting, null);
+
+        final EditText longitude_edt =  (EditText)view.findViewById(R.id.longitudeEDT);
+        final EditText latitude_edt = (EditText)view.findViewById(R.id.latitudeEDT);
+
+        longitude_edt.setText(String.valueOf(homeLongitude));
+        latitude_edt.setText(String.valueOf(homeLatitude));
+
+        helpBuilder.setView(view);
+
+
+        helpBuilder.setNeutralButton("套用目前座標",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                }).setPositiveButton("確認",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            homeLongitude = Double.parseDouble(longitude_edt.getText().toString());
+                            homeLatitude = Double.parseDouble(latitude_edt.getText().toString());
+                        } catch (NumberFormatException e) {
+                            Toast.makeText(MainActivity.this, " 無效座標", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+
+        // Remember, create doesn't show the dialog
+        final AlertDialog helpDialog = helpBuilder.create();
+        helpDialog.show();
+
+        helpDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                longitude_edt.setText(String.valueOf(location.getLongitude()));
+                latitude_edt.setText(String.valueOf(location.getLatitude()));
+
+            }
+        });
+    }
     /*20160116*/
     @Override
     public void onBackPressed() {
@@ -220,7 +274,7 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
             super.onBackPressed();
     }
     /*20160117*/
-    public  CommandManager getCommandManager(){
+    public CommandManager getCommandManager(){
         return this.commandManager;
     }
 }
