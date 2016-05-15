@@ -42,8 +42,19 @@ public class TVStatesFragment extends StatesFragment {
 
     public void getStates(){
         commandManager.sendCommand("get TV state");
-        enable.setText(commandManager.getData());
-        power.setText(commandManager.getData());
+
+        if(Boolean.parseBoolean(commandManager.getData())){
+            enable.setText("啟用");
+        }else{
+            enable.setText("註銷");
+        }
+
+        if(Boolean.parseBoolean(commandManager.getData())){
+            power.setText("開啟");
+        }else{
+            power.setText("關閉");
+        }
+
         channel.setText(commandManager.getData());
     }
 }
