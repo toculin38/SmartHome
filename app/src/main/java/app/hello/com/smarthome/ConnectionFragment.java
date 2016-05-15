@@ -109,8 +109,9 @@ public class ConnectionFragment extends PlaceholderFragment {
             String address = IPAddressEditText.getText().toString();
             Toast.makeText(getActivity(), address + " 連線中 請稍後...", Toast.LENGTH_LONG).show();
             commandManager.connectToServer(address);
-            if(commandManager.isConnecting())
+            if(commandManager.isConnecting()){
                 Toast.makeText(getActivity(), address + " 連接成功！", Toast.LENGTH_LONG).show();
+            }
             else
                 Toast.makeText(getActivity(), address + " 連接失敗！", Toast.LENGTH_LONG).show();
         }

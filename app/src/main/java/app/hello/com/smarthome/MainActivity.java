@@ -1,7 +1,6 @@
 package app.hello.com.smarthome;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,13 +11,12 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.text.method.DigitsKeyListener;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +26,8 @@ import android.widget.Toast;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.TimerTask;
+import java.util.logging.LogRecord;
 
 public class MainActivity extends AppCompatActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks,LocationListener {
 
@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
      */
     private CharSequence mTitle;
     private CommandManager commandManager;
+    private Handler mHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +50,12 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
 
         commandManager = new CommandManager();
-        testLocationProvider();		//檢查定位服務
+        mHandler = new Handler();
+
+        testLocationProvider();        //檢查定位服務
+
+        startSendingDistance();
+
     }
 
     private LocationManager lms;
@@ -58,6 +64,19 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
     private double homeLongitude = 120.6673807;
     private double homeLatitude = 24.1163121;
 
+    private TimerTask distanceSender = (new TimerTask() {
+        @Override
+        public void run() {
+            if(commandManager.isConnecting()) {
+                commandManager.sendCommand("dis:" + String.valueOf((int) getDistance()));
+            }
+            mHandler.postDelayed(distanceSender, 60000);
+        }
+    });
+
+    public void startSendingDistance(){
+        mHandler.postDelayed(distanceSender, 60000);
+    }
 
     public float getDistance(){
         if(location == null)
