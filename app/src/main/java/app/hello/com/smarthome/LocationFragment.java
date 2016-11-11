@@ -61,7 +61,7 @@ public class LocationFragment extends PlaceholderFragment {
         }
         else {
             Toast.makeText(getActivity(), "無法定位座標", Toast.LENGTH_LONG).show();
-            distance_txt.setText(distance_txt.getText() + String.valueOf(distance) + "m");
+            distance_txt.setText(getResources().getString(R.string.distance) + String.valueOf(distance) + "m");
         }
     }
 }

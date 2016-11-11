@@ -26,6 +26,10 @@
     <string name="enable">狀態：</string>
     <string name="power">電源：</string>
     <string name="channel">頻道：</string>
+    <string name="temperature">溫度：</string>
+    <string name="wind">風量：</string>
+    <string name="type">型態：</string>
+    <string name="speed">風速：</string>
 
     <string name="control">遙控</string>
 </resources>

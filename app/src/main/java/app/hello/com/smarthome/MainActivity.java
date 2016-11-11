@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
 
     public float getDistance(){
         if(location == null)
-                return 99999;
+                return 0;
         float distance[] = new float[2];
         Double longitude = location.getLongitude();	//取得經度
         Double latitude = location.getLatitude();	//取得緯度
