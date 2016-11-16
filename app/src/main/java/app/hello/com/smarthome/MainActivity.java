@@ -1,19 +1,21 @@
 package app.hello.com.smarthome;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Address;
-import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -24,12 +26,23 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.TimerTask;
-import java.util.logging.LogRecord;
 
-public class MainActivity extends AppCompatActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks,LocationListener {
+public class MainActivity extends AppCompatActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks,ConnectionCallbacks ,OnConnectionFailedListener, LocationListener {
+
+    private static final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 111;
 
     private NavigationDrawerFragment mNavigationDrawerFragment;
     /**
@@ -38,6 +51,42 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
     private CharSequence mTitle;
     private CommandManager commandManager;
     private Handler mHandler;
+
+    private GoogleApiClient mGoogleApiClient;
+    private LocationRequest mLocationRequest;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkPlayServices();
+        // Resuming the periodic location updates
+        if (mGoogleApiClient.isConnected()) {
+            startLocationUpdates();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopLocationUpdates();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,17 +101,91 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
         commandManager = new CommandManager();
         mHandler = new Handler();
 
-        testLocationProvider();        //檢查定位服務
+        if (checkPlayServices()) {
+
+            // Building the GoogleApi client
+            buildGoogleApiClient();
+
+            createLocationRequest();
+        }
 
         startSendingDistance();
 
     }
 
-    private LocationManager lms;
-    private String bestProvider;	//最佳資訊提供者
+    /**
+     * Method to verify google play services on the device
+     * */
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil
+                .isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                        1000).show();
+            } else {
+                Toast.makeText(getApplicationContext(),
+                        "This device is not supported.", Toast.LENGTH_LONG)
+                        .show();
+                finish();
+            }
+            return false;
+        }
+        return true;
+    }
+    /**
+     * Creating google api client object
+     * */
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API).build();
+    }
+    /**
+     * Creating location request object
+     * */
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(10000);
+        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setSmallestDisplacement(10);
+    }
+
     private Location location;
     private double homeLongitude = 120.6673807;
     private double homeLatitude = 24.1163121;
+
+
+    /**
+     * Starting the location updates
+     * */
+    protected void startLocationUpdates() {
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            LocationServices.FusedLocationApi.requestLocationUpdates(
+                    mGoogleApiClient, mLocationRequest, this);
+        }else{
+            ActivityCompat.requestPermissions(
+                    this, // Activity
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSIONS_REQUEST_FINE_LOCATION);
+            LocationServices.FusedLocationApi.requestLocationUpdates(
+                    mGoogleApiClient, mLocationRequest, this);
+        }
+
+    }
+
+    /**
+     * Stopping location updates
+     */
+    protected void stopLocationUpdates() {
+        LocationServices.FusedLocationApi.removeLocationUpdates(
+                mGoogleApiClient, this);
+    }
 
     private TimerTask distanceSender = (new TimerTask() {
         @Override
@@ -93,35 +216,10 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
         LocationManager status = (LocationManager) (this.getSystemService(Context.LOCATION_SERVICE));
         if (status.isProviderEnabled(LocationManager.GPS_PROVIDER) || status.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
             //如果GPS或網路定位開啟，呼叫locationServiceInitial()更新位置
-            locationServiceInitial();
+            //locationServiceInitial();
         } else {
             Toast.makeText(this, "請開啟定位服務", Toast.LENGTH_LONG).show();
             startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));	//開啟設定頁面
-        }
-    }
-
-    private void locationServiceInitial() {
-        lms = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);	//取得系統定位服務
-        Criteria criteria = new Criteria();	//資訊提供者選取標準
-        try {
-            List<String> providers = lms.getProviders(criteria,true);
-            for (String provider : providers) {
-                location = lms.getLastKnownLocation(provider);
-                if (location == null) {
-                    continue;
-                } else {
-                    bestProvider = provider;
-                }
-            }
-            if(bestProvider != null) {
-                lms.requestLocationUpdates(bestProvider, 1000, 0, this);
-                location = lms.getLastKnownLocation(bestProvider);
-            }
-            else{
-                Toast.makeText(this, "找不到GPS提供者，請稍後重新啟動後再試", Toast.LENGTH_LONG).show();
-            }
-        } catch (SecurityException e) {
-            System.out.print("...");
         }
     }
 
@@ -151,28 +249,6 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
         }
         return returnAddress;
     }
-
-    @Override
-    public void onLocationChanged(Location location) {	//當地點改變時
-        try {
-            this.location = location;
-        } catch (SecurityException e) {
-            Toast.makeText(this, "座標無法更新成功", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    @Override
-    public void onProviderDisabled(String arg0) {	//當GPS或網路定位功能關閉時
-    }
-
-    @Override
-    public void onProviderEnabled(String arg0) {	//當GPS或網路定位功能開啟
-    }
-
-    @Override
-    public void onStatusChanged(String arg0, int arg1, Bundle arg2) {	//定位狀態改變
-    }
-
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -295,5 +371,25 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
     /*20160117*/
     public CommandManager getCommandManager(){
         return this.commandManager;
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        startLocationUpdates();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Toast.makeText(this, "取得定位資訊失敗！", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        this.location = location;
     }
 }

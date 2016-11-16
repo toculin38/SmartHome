@@ -3,6 +3,8 @@
     package="app.hello.com.smarthome" >
     <!--使用wifi訪問網路所需要的許可權-->
 
+
+
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <!--訪問網路許可權-->
@@ -17,6 +19,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <!--網路定位-->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -31,6 +34,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBiv5TWkbVeuPNDrnk56wEYjL6EN-bq8ks"/>
+
+
+
     </application>
 
 </manifest>

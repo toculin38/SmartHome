@@ -53,6 +53,7 @@ public class LocationFragment extends PlaceholderFragment {
         if(location != null) {
             Double longitude = location.getLongitude();	//取得經度
             Double latitude = location.getLatitude();	//取得緯度
+
             String address = ((MainActivity) getActivity()).getAddressByLocation(location);
             longitude_txt.setText(getResources().getString(R.string.longitude) + String.valueOf(longitude));
             latitude_txt.setText(getResources().getString(R.string.latitude) + String.valueOf(latitude));
