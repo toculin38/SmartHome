@@ -1,6 +1,7 @@
 package app.hello.com.smarthome;
 
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -42,6 +43,9 @@ public class PlaceholderFragment extends Fragment {
             case 4:
                 fragment = new LocationFragment();
                 break;
+            case 5 :
+                fragment = new CameraFragment();
+                break;
             default:
                 fragment = new PlaceholderFragment();
         }
@@ -64,15 +68,24 @@ public class PlaceholderFragment extends Fragment {
         switch (getArguments().getInt(ARG_SECTION_NUMBER)) {
             case 2:
                 rootView = inflater.inflate(R.layout.fragment_appliances, container, false);
+                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 break;
             case 3:
                 rootView = inflater.inflate(R.layout.fragment_connection, container, false);
+                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 break;
             case 4:
                 rootView = inflater.inflate(R.layout.fragment_location, container, false);
+                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                break;
+            case  5:
+                rootView = inflater.inflate(R.layout.fragment_camera, container, false);
+                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 break;
             default:
                 rootView = inflater.inflate(R.layout.fragment_smart_home, container, false);
+                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         }
         return rootView;
     }

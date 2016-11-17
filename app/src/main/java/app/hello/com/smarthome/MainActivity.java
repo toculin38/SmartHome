@@ -211,18 +211,6 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
         return distance[0];
     }
 
-    private void testLocationProvider() {
-        //取得系統定位服務
-        LocationManager status = (LocationManager) (this.getSystemService(Context.LOCATION_SERVICE));
-        if (status.isProviderEnabled(LocationManager.GPS_PROVIDER) || status.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-            //如果GPS或網路定位開啟，呼叫locationServiceInitial()更新位置
-            //locationServiceInitial();
-        } else {
-            Toast.makeText(this, "請開啟定位服務", Toast.LENGTH_LONG).show();
-            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));	//開啟設定頁面
-        }
-    }
-
     public Location getLocation() {
         return location;
     }
@@ -272,6 +260,10 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
             case 4:
                 mTitle = getString(R.string.title_section4);
                 break;
+            case 5:
+                mTitle = getString(R.string.title_section5);
+                break;
+
         }
     }
 
