@@ -33,7 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="關燈"
-                android:tag="off"
+                android:tag="LightPower"
                 android:id="@+id/off"
                 android:layout_weight="1"
                 android:textSize="22dp" />

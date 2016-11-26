@@ -34,7 +34,7 @@
                 android:layout_height="match_parent"
                 android:text="開關"
                 android:tag="power"
-                android:id="@+id/power"
+                android:id="@+id/AirPower"
                 android:layout_weight="1"
                 android:textSize="22dp" />
 
@@ -58,7 +58,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="升溫"
-                android:tag="tempUpr"
+                android:tag="tempUp"
                 android:id="@+id/tempUp"
                 android:layout_weight="1"
                 android:textSize="22dp" />
